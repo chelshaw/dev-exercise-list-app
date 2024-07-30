@@ -8,9 +8,31 @@ const roboto = Roboto({
   display: 'swap',
 })
 
-const theme = createTheme({
+let theme = createTheme({
   typography: {
     fontFamily: roboto.style.fontFamily,
+  },
+})
+
+theme = createTheme(theme, {
+  components: {
+    MuiDialogActions: {
+      styleOverrides: {
+        root: {
+          paddingLeft: theme.spacing(3),
+          paddingRight: theme.spacing(3),
+          paddingBottom: theme.spacing(3),
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          fontWeight: 700,
+        },
+      },
+    },
   },
 })
 

@@ -1,5 +1,5 @@
 {
-  "name": "gardener-os-app",
+  "name": "list-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -13,6 +13,7 @@
     "@emotion/cache": "^11.13.0",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^5.16.5",
     "@mui/material": "^5.16.4",
     "@mui/material-nextjs": "^5.16.4",
     "@prisma/client": "^5.17.0",
