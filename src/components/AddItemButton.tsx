@@ -1,6 +1,6 @@
 'use client'
 
-import { addItemAction } from '@/lib/_actions'
+import { addItemAction } from '@/app/_actions'
 import { Add } from '@mui/icons-material'
 import {
   Button,

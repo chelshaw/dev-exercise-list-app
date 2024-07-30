@@ -16,18 +16,28 @@ export default async function Home() {
   const items = await listItems()
 
   return (
-    <Stack spacing={2}>
-      <Typography variant="body1">
-        You have {items.length.toLocaleString()} {pluralize(items.length, 'item', 'items')} in your
-        list
-      </Typography>
-      <Box>
+    <Stack spacing={2} sx={{ maxWidth: 400 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Typography variant="body1">
+          You have{' '}
+          <Box component="span" sx={{ fontWeight: 700 }}>
+            {items.length.toLocaleString()} {pluralize(items.length, 'item', 'items')}
+          </Box>{' '}
+          in your list
+        </Typography>
+
         <AddItemButton />
       </Box>
       {items.length > 0 && (
         <Box
           sx={{
-            maxWidth: 400,
             border: 1,
             borderColor: 'grey.200',
             borderRadius: 1,
@@ -41,7 +51,6 @@ export default async function Home() {
                     <ListItemText primary={item.name} />
                   </ListItemButton>
                 </ListItem>
-                {/* Render a divider if and only if it is not the last item in the array */}
                 {index < items.length - 1 && <Divider />}
               </>
             ))}
