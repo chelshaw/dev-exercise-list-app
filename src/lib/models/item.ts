@@ -1,6 +1,7 @@
-'use server'
-
+import { z } from 'zod'
+import { fromError } from 'zod-validation-error'
 import prisma from '../prisma'
+import { AuthUser } from './user'
 
 type ListItem = {
   id: string
@@ -13,19 +14,39 @@ type ListItemDetails = {
   description: string | null
 }
 
-export const listItems = async (): Promise<ListItem[]> => {
-  const listItems = await prisma.listItem.findMany()
-  return listItems.map((item) => ({ id: item.id, name: item.name }))
+export const listMyItems = async (authUser: AuthUser): Promise<ListItem[]> => {
+  const items = await prisma.listItem.findMany({ where: { authorId: authUser.id } })
+  return items.map((item) => ({ id: item.id, name: item.name }))
 }
 
-export const getItemDetails = async (id: string): Promise<ListItemDetails | null> => {
-  const listItem = await prisma.listItem.findUnique({ where: { id } })
+export const getItemDetails = async (
+  authUser: AuthUser,
+  id: string,
+): Promise<ListItemDetails | null> => {
+  const listItem = await prisma.listItem.findFirst({ where: { id, authorId: authUser.id } })
   if (!listItem) return null
   return { id: listItem.id, name: listItem.name, description: listItem.description }
 }
 
-export const createItem = async (name: string): Promise<ListItem> => {
-  if (!name) throw new Error('Name is required')
-  const listItem = await prisma.listItem.create({ data: { name } })
+export const createItem = async (
+  authUser: AuthUser,
+  name: string,
+  description: string,
+): Promise<ListItem> => {
+  const schema = z.object({
+    name: z.string().trim().min(1),
+    description: z.string().trim().optional(),
+  })
+
+  const parse = schema.safeParse({ name, description })
+
+  if (!parse.success) {
+    throw fromError(parse.error)
+  }
+
+  const data = parse.data
+  const listItem = await prisma.listItem.create({
+    data: { name: data.name, description: data.description, authorId: authUser.id },
+  })
   return { id: listItem.id, name: listItem.name }
 }

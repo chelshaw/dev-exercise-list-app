@@ -1,8 +1,10 @@
+import { SnackbarClientProvider } from '@/components/SnackbarClientProvider'
 import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { AppBar, Box, Button, CssBaseline, Toolbar, Typography } from '@mui/material'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter'
 import { ThemeProvider } from '@mui/material/styles'
 import type { Metadata } from 'next'
+import NextLink from 'next/link'
 import theme from '../theme'
 
 export const metadata: Metadata = {
@@ -21,41 +23,48 @@ export default function RootLayout({
         <body>
           <AppRouterCacheProvider>
             <ThemeProvider theme={theme}>
-              <CssBaseline />
-              <AppBar
-                position="fixed"
-                sx={{ zIndex: 1250, borderBottom: 2, borderColor: 'grey.200' }}
-                elevation={0}
-              >
-                <Toolbar sx={{ backgroundColor: 'background.paper' }}>
-                  <Box
-                    sx={{
-                      width: '100%',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Typography variant="h6" sx={{ color: 'text.primary' }}>
-                      List App
-                    </Typography>
-                    <Box>
-                      <SignedOut>
-                        <SignInButton>
-                          <Button variant="contained">Sign in</Button>
-                        </SignInButton>
-                      </SignedOut>
-                      <SignedIn>
-                        <UserButton />
-                      </SignedIn>
+              <SnackbarClientProvider>
+                <CssBaseline />
+                <AppBar
+                  position="fixed"
+                  sx={{ zIndex: 1250, borderBottom: 2, borderColor: 'grey.200' }}
+                  elevation={0}
+                >
+                  <Toolbar sx={{ backgroundColor: 'background.paper' }}>
+                    <Box
+                      sx={{
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Typography
+                        variant="h6"
+                        sx={{ color: 'text.primary', textDecoration: 'none' }}
+                        component={NextLink}
+                        href="/"
+                      >
+                        List App
+                      </Typography>
+                      <Box>
+                        <SignedOut>
+                          <SignInButton>
+                            <Button variant="contained">Sign in</Button>
+                          </SignInButton>
+                        </SignedOut>
+                        <SignedIn>
+                          <UserButton />
+                        </SignedIn>
+                      </Box>
                     </Box>
-                  </Box>
-                </Toolbar>
-              </AppBar>
-              <Box component="main" sx={{ m: 3 }}>
-                <Toolbar />
-                {children}
-              </Box>
+                  </Toolbar>
+                </AppBar>
+                <Box component="main" sx={{ m: 3 }}>
+                  <Toolbar />
+                  {children}
+                </Box>
+              </SnackbarClientProvider>
             </ThemeProvider>
           </AppRouterCacheProvider>
         </body>

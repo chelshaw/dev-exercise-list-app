@@ -1,6 +1,7 @@
 'use client'
 
-import { addItemAction } from '@/app/_actions'
+import { addItemAction } from '@/app/actions'
+import { formatErrorMessage } from '@/lib/utils'
 import { Add } from '@mui/icons-material'
 import {
   Button,
@@ -11,9 +12,11 @@ import {
   Stack,
   TextField,
 } from '@mui/material'
+import { useSnackbar } from 'notistack'
 import { useState } from 'react'
 
 export const AddItemButton = () => {
+  const { enqueueSnackbar } = useSnackbar()
   const [open, setOpen] = useState(false)
 
   const handleOpen = () => setOpen(true)
@@ -21,10 +24,14 @@ export const AddItemButton = () => {
     setOpen(false)
   }
 
-  const handleSubmit = async (data: FormData) => {
-    const name = data.get('name')
-    if (!name || typeof name !== 'string') return
-    await addItemAction(name)
+  const handleSubmit = async (formData: FormData) => {
+    try {
+      await addItemAction(formData)
+    } catch (error) {
+      enqueueSnackbar(formatErrorMessage(error), { variant: 'error' })
+      return
+    }
+
     handleClose()
   }
 
