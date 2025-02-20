@@ -13,6 +13,12 @@ type ListItemDetails = {
   name: string
   description: string | null
   image: string | null
+  category: Category | null
+}
+
+type Category = {
+  name: string
+  description?: string | null
 }
 
 export const listMyItems = async (authUser: AuthUser): Promise<ListItem[]> => {
@@ -20,17 +26,28 @@ export const listMyItems = async (authUser: AuthUser): Promise<ListItem[]> => {
   return items.map((item) => ({ id: item.id, name: item.name }))
 }
 
+export const listCategories = async (): Promise<Category[]> => {
+  const cats = await prisma.category.findMany()
+  return cats.map((cat) => ({ name: cat.name }))
+}
+
 export const getItemDetails = async (
   authUser: AuthUser,
   id: string,
 ): Promise<ListItemDetails | null> => {
-  const listItem = await prisma.listItem.findFirst({ where: { id, authorId: authUser.id } })
+  const listItem = await prisma.listItem.findFirst({
+    where: { id, authorId: authUser.id },
+    include: {
+      category: true,
+    },
+  })
   if (!listItem) return null
   return {
     id: listItem.id,
     name: listItem.name,
     description: listItem.description,
     image: listItem.image,
+    category: listItem.category,
   }
 }
 
@@ -39,14 +56,16 @@ export const createItem = async (
   name: string,
   description: string,
   image: string,
+  category: string,
 ): Promise<ListItem> => {
   const schema = z.object({
     name: z.string().trim().min(1),
     description: z.string().trim().optional(),
     image: z.string().trim().optional(),
+    category: z.string().trim().optional(),
   })
 
-  const parse = schema.safeParse({ name, description, image })
+  const parse = schema.safeParse({ name, description, image, category })
 
   if (!parse.success) {
     throw fromError(parse.error)
@@ -59,6 +78,7 @@ export const createItem = async (
       description: data.description,
       image: data.image,
       authorId: authUser.id,
+      categoryName: data.category,
     },
   })
   return { id: listItem.id, name: listItem.name }

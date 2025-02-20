@@ -9,15 +9,21 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   TextField,
 } from '@mui/material'
+import { Category } from '@prisma/client'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
 
-export const AddItemButton = () => {
+export const AddItemButton = ({ categories }: { categories: Pick<Category, "name">[] }) => {
   const { enqueueSnackbar } = useSnackbar()
   const [open, setOpen] = useState(false)
+  const [category, setCategory] = useState('')
 
   const handleOpen = () => setOpen(true)
   const handleClose = () => {
@@ -54,6 +60,21 @@ export const AddItemButton = () => {
                 rows={4}
               />
               <TextField name="image" label="Image URL" type="url" fullWidth />
+              <FormControl fullWidth>
+                <InputLabel id="category-label">Category</InputLabel>
+                <Select
+                  labelId="category-label"
+                  name="category"
+                  value={category}
+                  label="Category"
+                  onChange={(evt) => setCategory(evt.target.value)}
+                >
+                  <MenuItem value=""><em>uncategorized</em></MenuItem>
+                  {categories.map(cat => (
+                    <MenuItem key={cat.name} value={cat.name}>{cat.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Stack>
           </DialogContent>
           <DialogActions>
