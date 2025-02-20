@@ -18,6 +18,11 @@ export default async function Page({ params }: { params: { id: string } }) {
           <Typography color={itemDetails.description ? 'text.primary' : 'text.secondary'}>
             {itemDetails.description || 'No description'}
           </Typography>
+          {itemDetails.image && (
+            // Next Image doesn't allow arbitrary sources -- swap when we allow uploads & serve from vercel
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={itemDetails.image} alt={itemDetails.name} width="300" />
+          )}
         </>
       ) : (
         <Typography color="text.secondary">Item not found</Typography>
