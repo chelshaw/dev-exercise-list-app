@@ -3,10 +3,12 @@ import { listCategories, listMyItems } from '@/lib/models/item'
 import { getCurrentAuthUser } from '@/lib/models/user'
 import { pluralize } from '@/lib/utils'
 import {
+  Avatar,
   Box,
   Divider,
   List,
   ListItem,
+  ListItemAvatar,
   ListItemButton,
   ListItemText,
   Stack,
@@ -53,6 +55,11 @@ export default async function Home() {
                   <ListItemButton href={`/dashboard/item/${item.id}`}>
                     <ListItemText primary={item.name} />
                   </ListItemButton>
+                  {item.image && (
+                    <ListItemAvatar>
+                      <Avatar src={item.image} alt={item.name} />
+                    </ListItemAvatar>
+                  )}
                 </ListItem>
                 {index < items.length - 1 && <Divider />}
               </Box>

@@ -6,6 +6,7 @@ import { AuthUser } from './user'
 type ListItem = {
   id: string
   name: string
+  image: string | null
 }
 
 type ListItemDetails = {
@@ -23,7 +24,7 @@ type Category = {
 
 export const listMyItems = async (authUser: AuthUser): Promise<ListItem[]> => {
   const items = await prisma.listItem.findMany({ where: { authorId: authUser.id } })
-  return items.map((item) => ({ id: item.id, name: item.name }))
+  return items.map((item) => ({ id: item.id, name: item.name, image: item.image }))
 }
 
 export const listCategories = async (): Promise<Category[]> => {
@@ -89,5 +90,5 @@ export const createItem = async (
       categoryName: data.category,
     },
   })
-  return { id: listItem.id, name: listItem.name }
+  return { id: listItem.id, name: listItem.name, image: listItem.image }
 }
