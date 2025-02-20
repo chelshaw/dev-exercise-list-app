@@ -2,6 +2,7 @@ import { getItemDetails } from '@/lib/models/item'
 import { getCurrentAuthUser } from '@/lib/models/user'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { Box, Button, Chip, Stack, Tooltip, Typography } from '@mui/material'
+import Link from 'next/link'
 
 export default async function Page({ params }: { params: { id: string } }) {
   const authUser = getCurrentAuthUser()
@@ -18,10 +19,14 @@ export default async function Page({ params }: { params: { id: string } }) {
             <Typography variant="h4">{itemDetails.name}</Typography>
             {itemDetails.category?.description ? (
               <Tooltip title={itemDetails.category.description}>
-                <Chip label={itemDetails.category.name} />
+                <Link href={`/dashboard/category/${itemDetails.category.name}`} passHref>
+                  <Chip label={itemDetails.category.name} />
+                </Link>
               </Tooltip>
             ) : (
-              <Chip label={itemDetails.category?.name || 'uncategorized'} />
+              <Link href={`/dashboard/category/${itemDetails.category?.name || 'uncategorized'}`} passHref>
+                <Chip label={itemDetails.category?.name || 'uncategorized'} />
+              </Link>
             )}
           </Stack>
           <Typography color={itemDetails.description ? 'text.primary' : 'text.secondary'}>

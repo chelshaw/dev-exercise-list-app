@@ -31,6 +31,14 @@ export const listCategories = async (): Promise<Category[]> => {
   return cats.map((cat) => ({ name: cat.name }))
 }
 
+export const getItemsByCategory = async (
+  authUser: AuthUser,
+  categoryName: string,
+): Promise<ListItem[]> => {
+  const items = await prisma.listItem.findMany({ where: { authorId: authUser.id, categoryName } })
+  return items.map((item) => ({ id: item.id, name: item.name, image: item.image }))
+}
+
 export const getItemDetails = async (
   authUser: AuthUser,
   id: string,
