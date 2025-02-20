@@ -1,12 +1,14 @@
 import { AddItemButton } from '@/components/AddItemButton'
-import { listMyItems } from '@/lib/models/item'
+import { listCategories, listMyItems } from '@/lib/models/item'
 import { getCurrentAuthUser } from '@/lib/models/user'
 import { pluralize } from '@/lib/utils'
 import {
+  Avatar,
   Box,
   Divider,
   List,
   ListItem,
+  ListItemAvatar,
   ListItemButton,
   ListItemText,
   Stack,
@@ -16,6 +18,7 @@ import {
 export default async function Home() {
   const authUser = getCurrentAuthUser()
   const items = await listMyItems(authUser)
+  const categories = await listCategories()
 
   return (
     <Stack spacing={2} sx={{ maxWidth: 400 }}>
@@ -35,7 +38,7 @@ export default async function Home() {
           in your list
         </Typography>
 
-        <AddItemButton />
+        <AddItemButton categories={categories} />
       </Box>
       {items.length > 0 && (
         <Box
@@ -52,6 +55,11 @@ export default async function Home() {
                   <ListItemButton href={`/dashboard/item/${item.id}`}>
                     <ListItemText primary={item.name} />
                   </ListItemButton>
+                  {item.image && (
+                    <ListItemAvatar>
+                      <Avatar src={item.image} alt={item.name} />
+                    </ListItemAvatar>
+                  )}
                 </ListItem>
                 {index < items.length - 1 && <Divider />}
               </Box>

@@ -18,11 +18,20 @@ model ListItem {
   id        String   @id @default(uuid())
   name      String
   description String?
+  image String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt  
   authorId  String
+  categoryName String?
+  category Category? @relation(fields: [categoryName], references: [name])
 
   @@index([authorId])
 }
 
-
+model Category {
+  name      String @id
+  description String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt  
+  items ListItem[]
+}
